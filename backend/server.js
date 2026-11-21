@@ -46,6 +46,11 @@ app.use('/api/activity', activityRoutes);
 app.use('/api/activities', activityRoutes);
 app.use("/api/attachments", attachmentRoutes);
 app.use("/api/attachment", attachmentRoutes);
+
+// Health check endpoint for Render & UptimeRobot monitoring
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', uptime: process.uptime() }));
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', uptime: process.uptime() }));
+
 const { checkAndSendDueDateReminders } = require('./utils/dueDateService');
 
 app.listen(PORT, () => {
