@@ -109,6 +109,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
       subject,
       text: plainText,
       html,
+      headers: {
+        "X-Priority": "3",
+        "X-MSMail-Priority": "Normal",
+        "Importance": "Normal",
+        "X-Mailer": "TaskFlow Enterprise Mailer v2",
+        "List-Unsubscribe": `<mailto:${smtpUser}?subject=unsubscribe>`,
+      },
     });
 
     console.log("✅ Email sent successfully to:", to, "ID:", info.messageId);
