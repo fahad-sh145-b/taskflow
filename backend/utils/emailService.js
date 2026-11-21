@@ -3,25 +3,54 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport(
-  process.env.SMTP_HOST && process.env.SMTP_HOST !== "smtp.gmail.com"
-    ? {
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: process.env.SMTP_SECURE === "true",
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      }
-    : {
-        service: "gmail",
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      }
-);
+/**
+ * Creates and returns an optimized nodemailer transporter.
+ * Uses port 465 SSL for cloud container reliability (Render / Railway / AWS).
+ */
+const createTransporter = () => {
+  const user = (process.env.SMTP_USER || "").trim();
+  const pass = (process.env.SMTP_PASS || "").replace(/\s+/g, "");
+
+  if (process.env.SMTP_HOST && process.env.SMTP_HOST !== "smtp.gmail.com") {
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === "true",
+      auth: { user, pass },
+      tls: { rejectUnauthorized: false },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    });
+  }
+
+  // Reliable Direct SSL for Gmail in Cloud Environments
+  return nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: { user, pass },
+    tls: { rejectUnauthorized: false },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
+  });
+};
+
+const transporter = createTransporter();
+
+// Verify connection on startup
+if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+  transporter.verify((err, success) => {
+    if (err) {
+      console.error("⚠️ [Nodemailer] SMTP Verification Failed:", err.message);
+    } else {
+      console.log("✅ [Nodemailer] SMTP Connection Verified: Ready to send emails.");
+    }
+  });
+} else {
+  console.warn("⚠️ [Nodemailer] SMTP_USER or SMTP_PASS not set in environment variables.");
+}
 
 /**
  * Strips HTML tags and creates a clean, readable plain-text email fallback.
@@ -59,10 +88,21 @@ const sendEmail = async ({ to, subject, html, text }) => {
       };
     }
 
-    const smtpUser = process.env.SMTP_USER;
-    const plainText = text || htmlToPlainText(html) || subject;
+    const smtpUser = (process.env.SMTP_USER || "").trim();
+    const smtpPass = (process.env.SMTP_PASS || "").replace(/\s+/g, "");
 
-    const info = await transporter.sendMail({
+    if (!smtpUser || !smtpPass) {
+      console.error("❌ [Email Error] SMTP_USER or SMTP_PASS is not set in environment variables!");
+      return {
+        success: false,
+        message: "SMTP_USER or SMTP_PASS is missing in environment variables on Render",
+      };
+    }
+
+    const plainText = text || htmlToPlainText(html) || subject;
+    const activeTransporter = createTransporter();
+
+    const info = await activeTransporter.sendMail({
       from: `"TaskFlow" <${smtpUser}>`,
       replyTo: smtpUser,
       to,
@@ -71,14 +111,14 @@ const sendEmail = async ({ to, subject, html, text }) => {
       html,
     });
 
-    console.log("Email sent successfully to:", to, "ID:", info.messageId);
+    console.log("✅ Email sent successfully to:", to, "ID:", info.messageId);
 
     return {
       success: true,
       messageId: info.messageId,
     };
   } catch (error) {
-    console.error("Email sending failed:", error.message);
+    console.error("❌ Email sending failed:", error.message);
 
     return {
       success: false,
