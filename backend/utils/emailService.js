@@ -2,6 +2,7 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const nodemailer = require("nodemailer");
+const axios = require("axios");
 
 /**
  * Creates and returns an optimized nodemailer transporter.
@@ -100,32 +101,63 @@ const sendEmail = async ({ to, subject, html, text }) => {
     }
 
     const plainText = text || htmlToPlainText(html) || subject;
-    const activeTransporter = createTransporter();
 
-    const info = await activeTransporter.sendMail({
-      from: `"TaskFlow" <${smtpUser}>`,
-      replyTo: smtpUser,
-      to,
-      subject,
-      text: plainText,
-      html,
-      headers: {
-        "X-Priority": "3",
-        "X-MSMail-Priority": "Normal",
-        "Importance": "Normal",
-        "X-Mailer": "TaskFlow Enterprise Mailer v2",
-        "List-Unsubscribe": `<mailto:${smtpUser}?subject=unsubscribe>`,
-      },
-    });
+    // 1. Attempt Direct Nodemailer SMTP (works on localhost, VPS, or unrestricted hosts)
+    try {
+      const activeTransporter = createTransporter();
 
-    console.log("✅ Email sent successfully to:", to, "ID:", info.messageId);
+      const info = await activeTransporter.sendMail({
+        from: `"TaskFlow" <${smtpUser}>`,
+        replyTo: smtpUser,
+        to,
+        subject,
+        text: plainText,
+        html,
+        headers: {
+          "X-Priority": "3",
+          "X-MSMail-Priority": "Normal",
+          "Importance": "Normal",
+          "X-Mailer": "TaskFlow Enterprise Mailer v2",
+          "List-Unsubscribe": `<mailto:${smtpUser}?subject=unsubscribe>`,
+        },
+      });
 
-    return {
-      success: true,
-      messageId: info.messageId,
-    };
+      console.log("✅ Email sent successfully via Direct SMTP to:", to, "ID:", info.messageId);
+
+      return {
+        success: true,
+        messageId: info.messageId,
+      };
+    } catch (smtpErr) {
+      console.warn("⚠️ Direct SMTP failed (e.g. Render Free Tier port block):", smtpErr.message);
+      console.log("🔄 Forwarding to Vercel HTTPS Serverless Relay (Port 443)...");
+
+      // 2. HTTPS Relay over Port 443 (Never blocked by cloud firewalls)
+      const relayUrl = process.env.VERCEL_MAIL_RELAY_URL || "https://taskflow-eta-ten-87.vercel.app/api/send-email";
+      const relayResponse = await axios.post(
+        relayUrl,
+        {
+          to,
+          subject,
+          html,
+          text: plainText,
+        },
+        { timeout: 15000 }
+      );
+
+      if (relayResponse.data?.success) {
+        console.log("✅ Email sent successfully via Vercel HTTPS Relay to:", to, "ID:", relayResponse.data.messageId);
+        return {
+          success: true,
+          messageId: relayResponse.data.messageId,
+          relay: true,
+        };
+      }
+
+      throw new Error(relayResponse.data?.error || "Relay delivery failed");
+    }
   } catch (error) {
-    console.error("❌ Email sending failed:", error.message);
+    console.error("❌ Email sending failed completely:", error.message);
 
     return {
       success: false,

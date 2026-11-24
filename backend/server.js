@@ -47,6 +47,40 @@ app.use('/api/activities', activityRoutes);
 app.use("/api/attachments", attachmentRoutes);
 app.use("/api/attachment", attachmentRoutes);
 
+// Root endpoint - Elegant Status & Landing Page
+app.get('/', (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow API - Operational</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 40px 32px; max-width: 500px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    .status-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); color: #4ade80; padding: 6px 16px; border-radius: 9999px; font-size: 14px; font-weight: 600; margin-bottom: 24px; }
+    .status-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e; }
+    h1 { font-size: 26px; font-weight: 700; margin: 0 0 12px 0; color: #ffffff; }
+    p { color: #94a3b8; font-size: 15px; line-height: 1.6; margin: 0 0 28px 0; }
+    .btn { display: inline-block; background: #6366f1; color: #ffffff; font-weight: 600; font-size: 15px; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background 0.2s; }
+    .btn:hover { background: #4f46e5; }
+    .footer-note { font-size: 12px; color: #64748b; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="status-badge"><span class="status-dot"></span> TaskFlow Backend API is Online</div>
+    <h1>Cloud Services Operational</h1>
+    <p>This is the REST API server powering TaskFlow. To access the project management dashboard, open the live web app.</p>
+    <a href="https://taskflow-eta-ten-87.vercel.app" class="btn">Open TaskFlow App &rarr;</a>
+    <div class="footer-note">Render Cloud Backend &bull; Monitored 24/7 by UptimeRobot</div>
+  </div>
+</body>
+</html>
+    `);
+});
+
 // Health check endpoint for Render & UptimeRobot monitoring
 app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', uptime: process.uptime() }));
 app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', uptime: process.uptime() }));
