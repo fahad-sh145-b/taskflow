@@ -150,7 +150,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
                 const assignedByName = populatedTask.createdBy?.name || "A team member";
                 await sendEmail({
                     to: populatedTask.assignedTo.email,
-                    subject: `[TaskFlow] Task Update: "${populatedTask.title}" assigned to you`,
+                    subject: `[TaskFlow] New Task: "${populatedTask.title}" assigned to you`,
                     html: taskAssignedTemplate({
                         userName: populatedTask.assignedTo.name,
                         taskTitle: populatedTask.title,
@@ -342,7 +342,7 @@ router.put("/:id", jwtAuthMiddleware, async (req, res) => {
                 if (oldValues.status !== "completed" && updatedTask.status === "completed") {
                     subject = `[TaskFlow] Task Completed: "${updatedTask.title}"`;
                 } else if (assigneeChanged && recipientEmail === updatedTask.assignedTo?.email) {
-                    subject = `[TaskFlow] Task Update: "${updatedTask.title}" assigned to you`;
+                    subject = `[TaskFlow] New Task: "${updatedTask.title}" assigned to you`;
                 }
 
                 await sendEmail({

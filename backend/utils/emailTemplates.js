@@ -249,15 +249,15 @@ const taskAssignedTemplate = ({
   `;
 
   return buildEmailWrapper({
-    headerTag: "TASK UPDATE",
+    headerTag: "TASK ASSIGNED",
     tagBg: "#e0e7ff",
     tagColor: "#4338ca",
     accentColor: "#4f46e5",
     recipientName: userName || "Team Member",
-    headline: `Task Update: ${taskTitle}`,
-    leadText: `<strong>${assignedBy}</strong> assigned you to this task in <strong>TaskFlow</strong>.`,
+    headline: `New Task: ${taskTitle}`,
+    leadText: `<strong>${assignedBy}</strong> assigned a new task to you in <strong>TaskFlow</strong>.`,
     contentHtml,
-    ctaText: "Open Task in TaskFlow →",
+    ctaText: "View & Start Task →",
     ctaUrl: FRONTEND_URL,
   });
 };
