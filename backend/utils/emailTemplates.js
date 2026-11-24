@@ -3,7 +3,7 @@
  * Optimized for both Desktop and Mobile views with spacious typography and breathing room.
  */
 
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://taskflow-eta-ten-87.vercel.app";
 
 /**
  * Shared base email layout builder
@@ -213,14 +213,6 @@ const taskAssignedTemplate = ({
   dueDate = null,
   assignedBy = "A team member",
 }) => {
-  const priorityColors = {
-    high: { bg: "#fee2e2", text: "#b91c1c", label: "High Priority" },
-    medium: { bg: "#fef3c7", text: "#b45309", label: "Medium Priority" },
-    low: { bg: "#ecfdf5", text: "#047857", label: "Low Priority" },
-  };
-
-  const pStyle = priorityColors[priority] || priorityColors.medium;
-
   const contentHtml = `
     <div class="inner-box" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin:16px 0;">
       <div style="margin-bottom:12px;">
@@ -230,37 +222,43 @@ const taskAssignedTemplate = ({
         </h3>
       </div>
 
-      <!-- Meta Pills: with bottom margin so they never collide when wrapping -->
+      <!-- Current Meta Pills with wrapping spacing -->
       <div class="meta-pills-row" style="margin:12px 0 16px 0;line-height:2.0;">
-        <span class="meta-pill" style="background-color:${pStyle.bg};color:${pStyle.text};font-size:12px;font-weight:700;padding:5px 11px;border-radius:12px;display:inline-block;margin-right:8px;margin-bottom:10px;vertical-align:middle;line-height:1.4;">
-          ${pStyle.label}
+        <span class="meta-pill" style="background-color:#eef2ff;color:#4338ca;font-size:12px;font-weight:700;padding:5px 11px;border-radius:12px;display:inline-block;margin-right:8px;margin-bottom:10px;vertical-align:middle;line-height:1.4;">
+          Status: To Do
+        </span>
+        <span class="meta-pill" style="background-color:#f1f5f9;color:#475569;font-size:12px;font-weight:600;padding:5px 11px;border-radius:12px;display:inline-block;margin-right:8px;margin-bottom:10px;vertical-align:middle;text-transform:capitalize;line-height:1.4;">
+          Priority: ${priority}
         </span>
         ${dueDate ? `
-          <span class="meta-pill" style="background-color:#f1f5f9;color:#334155;font-size:12px;font-weight:600;padding:5px 11px;border-radius:12px;display:inline-block;margin-right:8px;margin-bottom:10px;vertical-align:middle;line-height:1.4;">
+          <span class="meta-pill" style="background-color:#f1f5f9;color:#475569;font-size:12px;font-weight:600;padding:5px 11px;border-radius:12px;display:inline-block;margin-right:8px;margin-bottom:10px;vertical-align:middle;line-height:1.4;">
             Due: ${dueDate}
           </span>
         ` : ""}
       </div>
 
-      <div class="desc-box" style="background-color:#ffffff;border:1px solid #e2e8f0;border-left:3px solid #6366f1;border-radius:6px;padding:14px 16px;margin-top:10px;">
-        <div class="desc-title" style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Description</div>
-        <p class="desc-text" style="margin:0;font-size:14px;color:#334155;line-height:1.75;word-break:break-word;">
-          ${taskDescription ? taskDescription : "<em style='color:#94a3b8'>No description provided</em>"}
-        </p>
-      </div>
+      ${taskDescription ? `
+        <div class="desc-box" style="background-color:#ffffff;border:1px solid #e2e8f0;border-left:3px solid #6366f1;border-radius:6px;padding:14px 16px;margin-top:10px;">
+          <div class="desc-title" style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Task Description</div>
+          <p class="desc-text" style="margin:0;font-size:14px;color:#334155;line-height:1.75;word-break:break-word;">
+            ${taskDescription}
+          </p>
+        </div>
+      ` : ""}
     </div>
   `;
 
   return buildEmailWrapper({
-    headerTag: "TASK ASSIGNED",
+    headerTag: "TASK UPDATE",
     tagBg: "#e0e7ff",
     tagColor: "#4338ca",
     accentColor: "#4f46e5",
     recipientName: userName || "Team Member",
-    headline: `New Task Assigned: ${taskTitle}`,
-    leadText: `<strong>${assignedBy}</strong> assigned a new task to you in <strong>TaskFlow</strong>:`,
+    headline: `Task Update: ${taskTitle}`,
+    leadText: `<strong>${assignedBy}</strong> assigned you to this task in <strong>TaskFlow</strong>.`,
     contentHtml,
-    ctaText: "View & Start Task →",
+    ctaText: "Open Task in TaskFlow →",
+    ctaUrl: FRONTEND_URL,
   });
 };
 
