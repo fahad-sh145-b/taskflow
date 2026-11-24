@@ -2,7 +2,6 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const nodemailer = require("nodemailer");
-const axios = require("axios");
 
 /**
  * Creates and returns an optimized nodemailer transporter.
@@ -134,27 +133,29 @@ const sendEmail = async ({ to, subject, html, text }) => {
 
       // 2. HTTPS Relay over Port 443 (Never blocked by cloud firewalls)
       const relayUrl = process.env.VERCEL_MAIL_RELAY_URL || "https://taskflow-eta-ten-87.vercel.app/api/send-email";
-      const relayResponse = await axios.post(
-        relayUrl,
-        {
+      const relayRes = await fetch(relayUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           to,
           subject,
           html,
           text: plainText,
-        },
-        { timeout: 15000 }
-      );
+        }),
+      });
 
-      if (relayResponse.data?.success) {
-        console.log("✅ Email sent successfully via Vercel HTTPS Relay to:", to, "ID:", relayResponse.data.messageId);
+      const relayData = await relayRes.json().catch(() => ({}));
+
+      if (relayRes.ok && relayData?.success) {
+        console.log("✅ Email sent successfully via Vercel HTTPS Relay to:", to, "ID:", relayData.messageId);
         return {
           success: true,
-          messageId: relayResponse.data.messageId,
+          messageId: relayData.messageId,
           relay: true,
         };
       }
 
-      throw new Error(relayResponse.data?.error || "Relay delivery failed");
+      throw new Error(relayData?.error || relayData?.message || `HTTP ${relayRes.status}`);
     }
   } catch (error) {
     console.error("❌ Email sending failed completely:", error.message);
