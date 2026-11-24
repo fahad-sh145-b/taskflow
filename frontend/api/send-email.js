@@ -53,8 +53,6 @@ export default async function handler(req, res) {
             "X-Priority": "3",
             "X-MSMail-Priority": "Normal",
             "Importance": "Normal",
-            "X-Mailer": "TaskFlow Enterprise Mailer v2",
-            "List-Unsubscribe": `<mailto:${smtpUser}?subject=unsubscribe>`,
           },
         },
         (error, result) => {

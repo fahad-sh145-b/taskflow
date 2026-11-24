@@ -147,6 +147,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
 
         if (populatedTask.assignedTo && populatedTask.assignedTo.email) {
             try {
+                const assignedByName = populatedTask.createdBy?.name || "A team member";
                 await sendEmail({
                     to: populatedTask.assignedTo.email,
                     subject: `[TaskFlow] Task Assigned: "${populatedTask.title}"`,
@@ -157,6 +158,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
                         taskDescription: populatedTask.description,
                         priority: populatedTask.priority,
                         dueDate: populatedTask.dueDate ? new Date(populatedTask.dueDate).toLocaleDateString() : null,
+                        assignedBy: assignedByName,
                     }),
                 });
             } catch (emailErr) {

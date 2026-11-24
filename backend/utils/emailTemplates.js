@@ -211,11 +211,12 @@ const taskAssignedTemplate = ({
   taskDescription = "",
   priority = "medium",
   dueDate = null,
+  assignedBy = "A team member",
 }) => {
   const priorityColors = {
-    high: { bg: "#fee2e2", text: "#b91c1c", label: "🔴 High Priority" },
-    medium: { bg: "#fef3c7", text: "#b45309", label: "🟡 Medium Priority" },
-    low: { bg: "#ecfdf5", text: "#047857", label: "🟢 Low Priority" },
+    high: { bg: "#fee2e2", text: "#b91c1c", label: "High Priority" },
+    medium: { bg: "#fef3c7", text: "#b45309", label: "Medium Priority" },
+    low: { bg: "#ecfdf5", text: "#047857", label: "Low Priority" },
   };
 
   const pStyle = priorityColors[priority] || priorityColors.medium;
@@ -223,7 +224,7 @@ const taskAssignedTemplate = ({
   const contentHtml = `
     <div class="inner-box" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin:16px 0;">
       <div style="margin-bottom:12px;">
-        <span style="display:block;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">📁 PROJECT: ${projectName}</span>
+        <span style="display:block;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">PROJECT: ${projectName}</span>
         <h3 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;line-height:1.35;">
           ${taskTitle}
         </h3>
@@ -236,7 +237,7 @@ const taskAssignedTemplate = ({
         </span>
         ${dueDate ? `
           <span class="meta-pill" style="background-color:#f1f5f9;color:#334155;font-size:12px;font-weight:600;padding:5px 11px;border-radius:12px;display:inline-block;margin-right:8px;margin-bottom:10px;vertical-align:middle;line-height:1.4;">
-            📅 Due: ${dueDate}
+            Due: ${dueDate}
           </span>
         ` : ""}
       </div>
@@ -257,7 +258,7 @@ const taskAssignedTemplate = ({
     accentColor: "#4f46e5",
     recipientName: userName || "Team Member",
     headline: `New Task Assigned: ${taskTitle}`,
-    leadText: "You have been assigned a new task in <strong>TaskFlow</strong>. Here are the details:",
+    leadText: `<strong>${assignedBy}</strong> assigned a new task to you in <strong>TaskFlow</strong>:`,
     contentHtml,
     ctaText: "View & Start Task →",
   });
