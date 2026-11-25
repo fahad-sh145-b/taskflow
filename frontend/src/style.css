@@ -4978,3 +4978,503 @@ header {
     margin-bottom: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
+
+
+/* ==========================================================================
+   TASKFLOW MOBILE & TABLET RESPONSIVE ENHANCEMENTS
+   Optimized for max-width: 768px (Tablets / Foldables) & 480px (Smartphones)
+   Desktop layout is preserved 100% without modification.
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* 1. Root & Layout Container Spacing */
+    .layout {
+        flex-direction: column !important;
+        min-height: 100vh;
+    }
+
+    /* 2. Sleek Compact Mobile Sidebar */
+    .sidebar {
+        width: 100% !important;
+        padding: 14px 14px 10px 14px !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .sidebar-brand-wrapper {
+        padding: 0 4px 10px 4px !important;
+        margin-bottom: 8px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .sidebar-section-label {
+        display: none !important;
+    }
+
+    .nav-shortcut-key {
+        display: none !important;
+    }
+
+    .sidebar .nav-item {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        margin-bottom: 4px !important;
+        border-radius: 8px !important;
+    }
+
+    .sidebar-user-card {
+        margin-top: 10px !important;
+        padding: 10px 12px !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+    }
+
+    .sidebar-user-name {
+        font-size: 13px !important;
+    }
+
+    .sidebar-user-email {
+        font-size: 11px !important;
+    }
+
+    .sidebar .btn-logout {
+        margin-top: 8px !important;
+        padding: 8px 12px !important;
+        font-size: 12.5px !important;
+    }
+
+    /* 3. Main Area Screen Utilization */
+    .main {
+        padding: 16px 14px !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    /* 4. Top Header & Action Buttons */
+    header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        margin-bottom: 18px !important;
+        padding-bottom: 14px !important;
+    }
+
+    .page-heading {
+        font-size: 22px !important;
+        line-height: 1.25 !important;
+    }
+
+    .page-subheading {
+        font-size: 12.5px !important;
+        line-height: 1.4 !important;
+    }
+
+    .header-action-group {
+        display: flex !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .btn-quick-new-task,
+    .btn-add-member {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 9px 10px !important;
+        font-size: 12px !important;
+    }
+
+    /* 5. Modern Swipeable Quick Jump Bar */
+    .dashboard-quick-nav {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 8px 10px !important;
+        gap: 6px !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+
+    .dashboard-quick-nav::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .quick-nav-label {
+        flex-shrink: 0 !important;
+        font-size: 10.5px !important;
+        margin-right: 2px !important;
+    }
+
+    .quick-nav-pill {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+        padding: 6px 11px !important;
+        font-size: 11.5px !important;
+    }
+
+    /* 6. Linear KPI Stat Cards Grid */
+    .stats-grid-linear {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .stat-card-linear {
+        padding: 10px 12px !important;
+        border-radius: 10px !important;
+    }
+
+    .stat-main-num {
+        font-size: 21px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .stat-label {
+        font-size: 10px !important;
+    }
+
+    .stat-icon-bubble {
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 6px !important;
+    }
+
+    .stat-icon-bubble svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    /* 7. Analytics Chart Cards */
+    .dashboard-analytics-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .analytics-card {
+        padding: 14px 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .analytics-card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .analytics-tab-toggle {
+        width: 100% !important;
+    }
+
+    .btn-analytics-toggle {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+    }
+
+    .velocity-barchart-panel {
+        padding: 14px 14px !important;
+        border-radius: 12px !important;
+        margin-bottom: 18px !important;
+    }
+
+    /* 8. Modern Responsive Task Cards & Actions Row */
+    .task-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 14px 14px !important;
+    }
+
+    .task-main-info {
+        width: 100% !important;
+    }
+
+    .task-card h3 {
+        font-size: 15px !important;
+        line-height: 1.35 !important;
+    }
+
+    .task-card p {
+        font-size: 12.5px !important;
+        line-height: 1.45 !important;
+    }
+
+    .task-meta-tags {
+        gap: 5px !important;
+    }
+
+    .task-actions {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid #f1f5f9 !important;
+    }
+
+    .btn-details,
+    .btn-edit-task,
+    .btn-remind {
+        font-size: 11.5px !important;
+        padding: 6px 10px !important;
+    }
+
+    .status-select {
+        font-size: 11.5px !important;
+        padding: 5px 8px !important;
+        max-width: 125px !important;
+        flex: 1 !important;
+    }
+
+    /* 9. Task Filter Controls & Chips */
+    .task-filter-panel {
+        padding: 12px 12px !important;
+        border-radius: 10px !important;
+    }
+
+    .filter-chips-row {
+        gap: 6px !important;
+        padding-bottom: 8px !important;
+    }
+
+    .filter-chip {
+        padding: 5px 9px !important;
+        font-size: 11.5px !important;
+    }
+
+    .filter-controls-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+
+    .filter-search-box {
+        width: 100% !important;
+    }
+
+    .filter-dropdowns-group {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+
+    /* 10. Jira Pivot Matrix Table Responsiveness */
+    .pivot-matrix-panel {
+        padding: 14px 12px !important;
+        border-radius: 12px !important;
+        margin-top: 16px !important;
+    }
+
+    .pivot-header-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        margin-bottom: 12px !important;
+        padding-bottom: 12px !important;
+    }
+
+    .pivot-dimension-controls {
+        width: 100% !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+    }
+
+    .pivot-pill-group {
+        width: 100% !important;
+        display: flex !important;
+    }
+
+    .pivot-pill-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+    }
+
+    .pivot-table-responsive-wrapper {
+        -webkit-overflow-scrolling: touch !important;
+        overflow-x: auto !important;
+        margin: 0 -2px !important;
+    }
+
+    .pivot-table thead th {
+        padding: 8px 10px !important;
+        font-size: 10.5px !important;
+        white-space: nowrap !important;
+    }
+
+    .pivot-data-row td,
+    .pivot-total-row td {
+        padding: 10px 8px !important;
+        font-size: 12px !important;
+    }
+
+    /* 11. Interactive Project Cards */
+    .project-card-interactive {
+        padding: 14px 14px !important;
+    }
+
+    .project-card-actions-bar {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .project-card-owner-actions {
+        width: 100% !important;
+        justify-content: flex-end !important;
+    }
+
+    .project-detail-nav {
+        padding: 10px 12px !important;
+        gap: 8px !important;
+    }
+
+    .project-header-actions {
+        width: 100% !important;
+        gap: 6px !important;
+    }
+
+    .btn-add-project-task,
+    .btn-edit-project {
+        flex: 1 !important;
+        justify-content: center !important;
+        font-size: 12px !important;
+        padding: 7px 10px !important;
+    }
+
+    /* 12. Kanban Board Columns */
+    .kanban-board {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .kanban-column {
+        min-height: auto !important;
+        padding: 12px !important;
+        border-radius: 10px !important;
+    }
+
+    /* 13. Mobile Popups & Modals */
+    .modal {
+        padding: 10px !important;
+    }
+
+    .modal-content {
+        width: 100% !important;
+        max-width: 96vw !important;
+        max-height: 88vh !important;
+        border-radius: 14px !important;
+    }
+
+    .modal-header {
+        padding: 14px 16px !important;
+    }
+
+    .modal-header h2 {
+        font-size: 17px !important;
+    }
+
+    .modal-subtitle {
+        font-size: 12px !important;
+    }
+
+    .modal-tabs {
+        padding: 8px 12px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 4px !important;
+    }
+
+    .modal-tab {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+
+    .modal-body {
+        padding: 14px 16px !important;
+    }
+
+    .email-info-banner {
+        padding: 8px 14px !important;
+        font-size: 11px !important;
+    }
+
+    .edit-task-modal {
+        max-width: 96vw !important;
+    }
+
+    .edit-task-form {
+        padding: 14px 16px !important;
+        gap: 12px !important;
+    }
+
+    .edit-form-row {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .edit-modal-actions {
+        flex-direction: column-reverse !important;
+        gap: 8px !important;
+    }
+
+    .edit-modal-actions button {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ultra-Compact Phone Screens (360px - 440px) */
+    .main {
+        padding: 12px 8px !important;
+    }
+
+    .page-heading {
+        font-size: 20px !important;
+    }
+
+    .stats-grid-linear {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+    }
+
+    .stat-card-linear {
+        padding: 8px 10px !important;
+    }
+
+    .stat-main-num {
+        font-size: 18px !important;
+    }
+
+    .stat-label {
+        font-size: 9.5px !important;
+        letter-spacing: 0.3px !important;
+    }
+
+    .header-action-group {
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+
+    .btn-quick-new-task,
+    .btn-add-member {
+        width: 100% !important;
+    }
+
+    .auth-card {
+        padding: 24px 18px !important;
+        border-radius: 14px !important;
+    }
+
+    .auth-card h1 {
+        font-size: 22px !important;
+    }
+}
