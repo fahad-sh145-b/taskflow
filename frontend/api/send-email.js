@@ -1,5 +1,28 @@
 import nodemailer from "nodemailer";
 
+const htmlToPlainText = (html) => {
+  if (!html) return "";
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"[^>]*>(.*?)<\/a>/gi, "$2 ($1)")
+    .replace(/<br\s*[\/]?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/h[1-6]>/gi, "\n\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<li[^>]*>/gi, "• ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n\s+\n/g, "\n\n")
+    .trim();
+};
+
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -40,14 +63,16 @@ export default async function handler(req, res) {
       socketTimeout: 15000,
     });
 
+    const plainText = text || htmlToPlainText(html) || subject;
+
     const info = await new Promise((resolve, reject) => {
       transporter.sendMail(
         {
-          from: `"TaskFlow" <${smtpUser}>`,
+          from: `"TaskFlow Notifications" <${smtpUser}>`,
           replyTo: smtpUser,
           to,
           subject,
-          text: text || subject,
+          text: plainText,
           html,
           headers: {
             "X-Priority": "3",

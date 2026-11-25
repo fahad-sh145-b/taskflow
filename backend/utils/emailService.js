@@ -106,7 +106,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
       const activeTransporter = createTransporter();
 
       const info = await activeTransporter.sendMail({
-        from: `"TaskFlow" <${smtpUser}>`,
+        from: `"TaskFlow Notifications" <${smtpUser}>`,
         replyTo: smtpUser,
         to,
         subject,

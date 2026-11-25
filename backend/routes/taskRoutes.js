@@ -145,14 +145,37 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
             task: populatedTask,
         });
 
-        if (populatedTask.assignedTo && populatedTask.assignedTo.email) {
-            try {
-                const assignedByName = populatedTask.createdBy?.name || "A team member";
+        try {
+            const recipients = new Map();
+
+            if (populatedTask.assignedTo?.email) {
+                recipients.set(populatedTask.assignedTo.email, {
+                    name: populatedTask.assignedTo.name,
+                    isAssignee: true,
+                });
+            }
+
+            if (populatedTask.createdBy?.email) {
+                if (!recipients.has(populatedTask.createdBy.email)) {
+                    recipients.set(populatedTask.createdBy.email, {
+                        name: populatedTask.createdBy.name,
+                        isAssignee: false,
+                    });
+                }
+            }
+
+            const assignedByName = populatedTask.createdBy?.name || "A team member";
+
+            for (const [email, info] of recipients.entries()) {
+                const subject = info.isAssignee
+                    ? `[TaskFlow] New Task: "${populatedTask.title}" assigned to you`
+                    : `[TaskFlow] Task Created: "${populatedTask.title}"`;
+
                 await sendEmail({
-                    to: populatedTask.assignedTo.email,
-                    subject: `[TaskFlow] New Task: "${populatedTask.title}" assigned to you`,
+                    to: email,
+                    subject,
                     html: taskAssignedTemplate({
-                        userName: populatedTask.assignedTo.name,
+                        userName: info.name,
                         taskTitle: populatedTask.title,
                         projectName: populatedTask.project?.name || "Project",
                         taskDescription: populatedTask.description,
@@ -161,9 +184,9 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
                         assignedBy: assignedByName,
                     }),
                 });
-            } catch (emailErr) {
-                console.error("Assignment email failed:", emailErr.message);
             }
+        } catch (emailErr) {
+            console.error("Assignment email failed:", emailErr.message);
         }
     } catch (error) {
         res.status(500).json({

@@ -106,10 +106,14 @@ router.post('/:taskId', jwtAuthMiddleware, async (req, res) => {
                 notificationUsers.push(task.assignedTo.toString());
             }
 
-            const currentUserIdStr = userId.toString();
+            // Also notify the commenter so they receive a record in their inbox
+            if (userId) {
+                notificationUsers.push(userId.toString());
+            }
+
             const uniqueUsers = [
                 ...new Set(notificationUsers),
-            ].filter((uId) => uId !== currentUserIdStr);
+            ];
 
             if (uniqueUsers.length > 0) {
                 const recipients = await User.find({

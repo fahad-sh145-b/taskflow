@@ -132,8 +132,8 @@ const buildEmailWrapper = ({
                     <div style="display:inline-block;vertical-align:middle;">
                       <table border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                          <td style="background:${accentColor};width:32px;height:32px;border-radius:8px;text-align:center;color:#ffffff;font-weight:900;font-size:17px;line-height:32px;">
-                            ⚡
+                          <td style="background:${accentColor};width:32px;height:32px;border-radius:8px;text-align:center;color:#ffffff;font-weight:900;font-size:15px;line-height:32px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+                            TF
                           </td>
                           <td style="padding-left:10px;">
                             <span class="brand-title" style="font-size:19px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;display:block;">TaskFlow</span>
