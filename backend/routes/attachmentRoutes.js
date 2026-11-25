@@ -10,6 +10,9 @@ const Project = require("../models/project");
 const User = require("../models/user");
 const { jwtAuthMiddleware } = require('../jwt');
 
+const { sendEmail } = require("../utils/emailService");
+const { attachmentUploadedTemplate } = require("../utils/emailTemplates");
+
 const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -152,6 +155,51 @@ router.post(
                 task: task._id,
                 uploadedBy: userId,
             });
+
+            // Trigger email notification to creator, assignee, and uploader
+            try {
+                const project = task.project ? await Project.findById(task.project) : null;
+                const uploader = await User.findById(userId).select("name email");
+                const uploaderName = uploader?.name || "A team member";
+
+                const notificationUsers = [];
+                if (task.createdBy) notificationUsers.push(task.createdBy.toString());
+                if (task.assignedTo) notificationUsers.push(task.assignedTo.toString());
+                if (userId) notificationUsers.push(userId.toString());
+
+                const uniqueUsers = [...new Set(notificationUsers)];
+
+                if (uniqueUsers.length > 0) {
+                    const recipients = await User.find({ _id: { $in: uniqueUsers } }).select("name email");
+                    const projectName = project?.name || "General";
+
+                    const formatFileSize = (bytes) => {
+                        if (!bytes || isNaN(bytes)) return "";
+                        if (bytes < 1024) return `${bytes} B`;
+                        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+                        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+                    };
+
+                    await Promise.all(
+                        recipients.map((recipient) =>
+                            sendEmail({
+                                to: recipient.email,
+                                subject: `[TaskFlow] New Attachment on "${task.title}"`,
+                                html: attachmentUploadedTemplate({
+                                    userName: recipient.name,
+                                    taskTitle: task.title,
+                                    projectName,
+                                    fileName: req.file.originalname,
+                                    fileSize: formatFileSize(req.file.size),
+                                    uploadedBy: uploaderName,
+                                }),
+                            }).catch((e) => console.error("Email send failed for attachment:", e.message))
+                        )
+                    );
+                }
+            } catch (emailErr) {
+                console.error("Attachment upload email notification error:", emailErr.message);
+            }
 
             res.status(201).json({
                 message: "File uploaded successfully",

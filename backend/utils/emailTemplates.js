@@ -524,6 +524,57 @@ const taskOverdueTemplate = ({
   });
 };
 
+/**
+ * 7. New Attachment Uploaded Notification
+ */
+const attachmentUploadedTemplate = ({
+  userName,
+  taskTitle,
+  projectName = "General",
+  fileName,
+  fileSize = "",
+  uploadedBy = "A team member",
+}) => {
+  const contentHtml = `
+    <div class="inner-box" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:10px;padding:18px 20px;margin:16px 0;">
+      <div style="margin-bottom:12px;">
+        <span style="display:block;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">PROJECT: ${projectName}</span>
+        <h3 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;line-height:1.35;">
+          ${taskTitle}
+        </h3>
+      </div>
+
+      <div class="desc-box" style="background-color:#ffffff;border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px;margin:14px 0;">
+        <div style="font-size:11px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
+          ATTACHED FILE DETAILS
+        </div>
+        <p style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:#0f172a;word-break:break-all;">
+          📎 ${fileName}
+        </p>
+        <div style="font-size:12.5px;color:#64748b;line-height:1.5;">
+          Uploaded by: <strong>${uploadedBy}</strong> ${fileSize ? `• Size: <strong>${fileSize}</strong>` : ""}
+        </div>
+      </div>
+
+      <p style="margin:12px 0 0 0;font-size:13px;color:#475569;line-height:1.6;">
+        💡 You can review or download this file directly from the Attachments tab inside TaskFlow.
+      </p>
+    </div>
+  `;
+
+  return buildEmailWrapper({
+    headerTag: "ATTACHMENT UPLOADED",
+    tagBg: "#e0e7ff",
+    tagColor: "#4338ca",
+    accentColor: "#6366f1",
+    recipientName: userName || "Team Member",
+    headline: `New Attachment on: ${taskTitle}`,
+    leadText: `<strong>${uploadedBy}</strong> uploaded a new file to this task.`,
+    contentHtml,
+    ctaText: "View & Download File →",
+  });
+};
+
 module.exports = {
   taskAssignedTemplate,
   commentNotificationTemplate,
@@ -531,4 +582,5 @@ module.exports = {
   taskUpdatedTemplate,
   taskDueTodayTemplate,
   taskOverdueTemplate,
+  attachmentUploadedTemplate,
 };

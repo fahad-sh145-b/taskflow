@@ -3841,7 +3841,7 @@ export default function App() {
                                 <span>• <strong>On Due Date (Today):</strong> Emails Assignee <code>{selectedTask.assignedTo?.email || "Unassigned"}</code></span>
                                 <span>• <strong>Overdue Tasks:</strong> 🚫 No emails sent (emails are sent only when due)</span>
                                 <span>• <strong>On Completion:</strong> Emails Creator <code>{selectedTask.createdBy?.email || "N/A"}</code></span>
-                                <span>• <strong>On Comments:</strong> Emails Creator & Assignee</span>
+                                <span>• <strong>On Comments & Files:</strong> Emails Creator & Assignee</span>
                             </div>
                         </div>
 
