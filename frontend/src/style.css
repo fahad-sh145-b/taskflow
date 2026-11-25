@@ -1488,13 +1488,14 @@ header {
     align-items: center;
     justify-content: center;
     z-index: 999;
+    padding: 32px 20px;
 }
 
 .modal-content {
     background: #ffffff;
     width: 620px;
     max-width: 92vw;
-    max-height: 85vh;
+    max-height: calc(100vh - 64px);
     border-radius: var(--radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
@@ -1502,6 +1503,7 @@ header {
     flex-direction: column;
     overflow: hidden;
     animation: modalEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    margin: auto;
 }
 
 @keyframes modalEnter {
@@ -1519,55 +1521,56 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 20px 24px;
+    padding: 14px 20px;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .modal-header h2 {
-    font-size: 20px;
+    font-size: 18px;
     color: #1e293b;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .modal-subtitle {
-    font-size: 13px;
+    font-size: 12.5px;
     color: #64748b;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .modal-email-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     margin-top: 6px;
 }
 
 .email-badge {
     background: #f1f5f9;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11.5px;
     color: #334155;
 }
 
 .email-info-banner {
     background: #eff6ff;
     border-bottom: 1px solid #dbeafe;
-    padding: 10px 24px;
-    font-size: 12px;
+    padding: 8px 20px;
+    font-size: 11.5px;
     color: #1e40af;
 }
 
 .email-info-title {
-    font-weight: 600;
+    font-weight: 700;
     display: block;
     margin-bottom: 4px;
+    font-size: 11.5px;
 }
 
 .email-info-rules {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 12px;
 }
 
 .email-info-rules code {
@@ -1593,8 +1596,8 @@ header {
 
 .modal-tabs {
     display: flex;
-    gap: 8px;
-    padding: 10px 24px;
+    gap: 6px;
+    padding: 8px 20px;
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
 }
@@ -1605,9 +1608,9 @@ header {
     gap: 6px;
     background: transparent;
     color: #64748b;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
-    padding: 8px 14px;
+    padding: 6px 12px;
     border-radius: 6px;
     transition: all 0.15s ease;
 }
@@ -1625,27 +1628,27 @@ header {
 }
 
 .modal-body {
-    padding: 20px 24px;
+    padding: 16px 20px 20px 20px;
     flex: 1;
     overflow-y: auto;
-    min-height: 250px;
-    max-height: 450px;
+    min-height: 140px;
+    max-height: 380px;
 }
 
 .loading-state {
     text-align: center;
-    padding: 40px 0;
+    padding: 24px 0;
     color: #64748b;
 }
 
 .empty-state {
     text-align: center;
-    padding: 40px 10px;
+    padding: 18px 10px;
     color: #64748b;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .empty-state p {
@@ -1759,13 +1762,15 @@ header {
     display: flex;
     gap: 8px;
     margin-top: auto;
-    padding-top: 10px;
+    padding-top: 12px;
+    padding-bottom: 6px;
+    margin-bottom: 2px;
     border-top: 1px solid #f1f5f9;
 }
 
 .comment-form input {
     flex: 1;
-    padding: 10px 14px;
+    padding: 9px 13px;
     font-size: 13px;
 }
 
@@ -1773,8 +1778,8 @@ header {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 10px 16px;
-    font-weight: 500;
+    padding: 9px 16px;
+    font-weight: 600;
     white-space: nowrap;
 }
 
@@ -5360,14 +5365,15 @@ header {
     }
 
     /* 13. Mobile Popups & Modals */
-    .modal {
-        padding: 10px !important;
+    .modal,
+    .modal-backdrop {
+        padding: 12px !important;
     }
 
     .modal-content {
         width: 100% !important;
         max-width: 96vw !important;
-        max-height: 88vh !important;
+        max-height: 90vh !important;
         border-radius: 14px !important;
     }
 
@@ -5404,6 +5410,10 @@ header {
     .email-info-banner {
         padding: 8px 14px !important;
         font-size: 11px !important;
+    }
+
+    .email-info-rules {
+        grid-template-columns: 1fr !important;
     }
 
     .edit-task-modal {
