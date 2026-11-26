@@ -1082,7 +1082,7 @@ export default function App() {
                         <option value="unassigned">⚪ Unassigned</option>
                         {users.map(u => (
                             <option key={u._id} value={u._id}>
-                                👤 {u.name} {u.role === "admin" ? "• Admin" : ""}
+                                👤 {u.name} ({u.email})
                             </option>
                         ))}
                     </select>
@@ -2733,8 +2733,37 @@ export default function App() {
                                                             </div>
 
                                                             <div className="task-actions">
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn-details"
+                                                                    onClick={() => openTaskModal(task)}
+                                                                    title="View History, Comments & Files"
+                                                                >
+                                                                    <MessageSquare size={15} /> History & Comments
+                                                                </button>
+
+                                                                {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn-card-remind"
+                                                                        onClick={() => handleSendDueReminder(task._id)}
+                                                                        disabled={sendingReminderId === task._id}
+                                                                        title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
+                                                                    >
+                                                                        <BellRing size={14} /> {sendingReminderId === task._id ? "Sending..." : "Remind"}
+                                                                    </button>
+                                                                )}
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn-edit-task"
+                                                                    onClick={() => openEditTaskModal(task)}
+                                                                    title="Edit Task Details"
+                                                                >
+                                                                    <Pencil size={14} /> Edit
+                                                                </button>
+
                                                                 <select
-                                                                    className="task-status-select"
                                                                     value={task.status}
                                                                     onChange={e => updateTask(task._id, e.target.value)}
                                                                 >
@@ -2743,45 +2772,13 @@ export default function App() {
                                                                     <option value="completed">Completed</option>
                                                                 </select>
 
-                                                                <div className="task-actions-btn-group">
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn-details"
-                                                                        onClick={() => openTaskModal(task)}
-                                                                        title="View History, Comments & Files"
-                                                                    >
-                                                                        <MessageSquare size={15} /> <span className="btn-action-text">History & Comments</span>
-                                                                    </button>
-
-                                                                    {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
-                                                                        <button
-                                                                            type="button"
-                                                                            className="btn-card-remind"
-                                                                            onClick={() => handleSendDueReminder(task._id)}
-                                                                            disabled={sendingReminderId === task._id}
-                                                                            title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
-                                                                        >
-                                                                            <BellRing size={14} /> <span className="btn-action-text">{sendingReminderId === task._id ? "Sending..." : "Remind"}</span>
-                                                                        </button>
-                                                                    )}
-
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn-edit-task"
-                                                                        onClick={() => openEditTaskModal(task)}
-                                                                        title="Edit Task Details"
-                                                                    >
-                                                                        <Pencil size={14} /> <span className="btn-action-text">Edit</span>
-                                                                    </button>
-
-                                                                    <button
-                                                                        className="btn-delete"
-                                                                        onClick={() => deleteTask(task._id)}
-                                                                        title="Delete Task"
-                                                                    >
-                                                                        <Trash2 size={16} />
-                                                                    </button>
-                                                                </div>
+                                                                <button
+                                                                    className="btn-delete"
+                                                                    onClick={() => deleteTask(task._id)}
+                                                                    title="Delete Task"
+                                                                >
+                                                                    <Trash2 size={16} />
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     );
@@ -3305,8 +3302,37 @@ export default function App() {
                                                 </div>
 
                                             <div className="task-actions">
+                                                <button
+                                                    type="button"
+                                                    className="btn-details"
+                                                    onClick={() => openTaskModal(task)}
+                                                    title="View History, Comments & Files"
+                                                >
+                                                    <MessageSquare size={15} /> History & Comments
+                                                </button>
+
+                                                {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
+                                                    <button
+                                                        type="button"
+                                                        className="btn-card-remind"
+                                                        onClick={() => handleSendDueReminder(task._id)}
+                                                        disabled={sendingReminderId === task._id}
+                                                        title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
+                                                    >
+                                                        <BellRing size={14} /> {sendingReminderId === task._id ? "Sending..." : "Remind"}
+                                                    </button>
+                                                )}
+
+                                                <button
+                                                    type="button"
+                                                    className="btn-edit-task"
+                                                    onClick={() => openEditTaskModal(task)}
+                                                    title="Edit Task Details"
+                                                >
+                                                    <Pencil size={14} /> Edit
+                                                </button>
+
                                                 <select
-                                                    className="task-status-select"
                                                     value={task.status}
                                                     onChange={e =>
                                                         updateTask(
@@ -3320,45 +3346,13 @@ export default function App() {
                                                     <option value="completed">Completed</option>
                                                 </select>
 
-                                                <div className="task-actions-btn-group">
-                                                    <button
-                                                        type="button"
-                                                        className="btn-details"
-                                                        onClick={() => openTaskModal(task)}
-                                                        title="View History, Comments & Files"
-                                                    >
-                                                        <MessageSquare size={15} /> <span className="btn-action-text">History & Comments</span>
-                                                    </button>
-
-                                                    {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
-                                                        <button
-                                                            type="button"
-                                                            className="btn-card-remind"
-                                                            onClick={() => handleSendDueReminder(task._id)}
-                                                            disabled={sendingReminderId === task._id}
-                                                            title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
-                                                        >
-                                                            <BellRing size={14} /> <span className="btn-action-text">{sendingReminderId === task._id ? "Sending..." : "Remind"}</span>
-                                                        </button>
-                                                    )}
-
-                                                    <button
-                                                        type="button"
-                                                        className="btn-edit-task"
-                                                        onClick={() => openEditTaskModal(task)}
-                                                        title="Edit Task Details"
-                                                    >
-                                                        <Pencil size={14} /> <span className="btn-action-text">Edit</span>
-                                                    </button>
-
-                                                    <button
-                                                        className="btn-delete"
-                                                        onClick={() => deleteTask(task._id)}
-                                                        title="Delete Task"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    className="btn-delete"
+                                                    onClick={() => deleteTask(task._id)}
+                                                    title="Delete Task"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
                                         </div>
                                     );
@@ -3624,14 +3618,9 @@ export default function App() {
                         <div className="current-user-session-banner">
                             <div className="session-left">
                                 <span className="session-indicator">●</span>
-                                <div className="session-user-info-col">
-                                    <div className="session-viewing-text">
-                                        Currently viewing as: <strong>{user.name}</strong>
-                                    </div>
-                                    <code className="session-email-badge" title={user.email}>
-                                        {user.email}
-                                    </code>
-                                </div>
+                                <span>
+                                    Currently viewing as: <strong>{user.name}</strong> (<code>{user.email}</code>)
+                                </span>
                             </div>
                             <div className="session-roles">
                                 <span className="session-label">Your Account:</span>
