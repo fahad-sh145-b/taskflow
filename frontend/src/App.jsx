@@ -214,6 +214,21 @@ export default function App() {
         }
     }, [user]);
 
+    // Handle deep-linking from email links (?taskId=...&tab=attachments)
+    useEffect(() => {
+        if (tasks && tasks.length > 0 && !selectedTask) {
+            const params = new URLSearchParams(window.location.search);
+            const urlTaskId = params.get("taskId");
+            const urlTab = params.get("tab") || "activity";
+            if (urlTaskId) {
+                const matchedTask = tasks.find(t => t._id === urlTaskId);
+                if (matchedTask) {
+                    openTaskModal(matchedTask, urlTab);
+                }
+            }
+        }
+    }, [tasks]);
+
     useEffect(() => {
         if (message) {
             const timer = setTimeout(() => {
@@ -723,9 +738,9 @@ export default function App() {
         }
     };
 
-    const openTaskModal = async (task) => {
+    const openTaskModal = async (task, initialTab = "activity") => {
         setSelectedTask(task);
-        setModalTab("activity");
+        setModalTab(initialTab);
         setLoadingDetails(true);
 
         try {
@@ -753,6 +768,9 @@ export default function App() {
         setNewCommentText("");
         setSelectedFile(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
+        if (window.location.search.includes("taskId")) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
     };
 
     const handleSendDueReminder = async (taskId) => {

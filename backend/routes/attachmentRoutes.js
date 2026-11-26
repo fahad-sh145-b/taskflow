@@ -180,6 +180,11 @@ router.post(
                         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
                     };
 
+                    const backendUrl = process.env.BACKEND_URL || "https://taskflow-xyek.onrender.com";
+                    const frontendUrl = process.env.FRONTEND_URL || "https://taskflow-eta-ten-87.vercel.app";
+                    const downloadUrl = `${backendUrl}/api/attachment/file/${attachment._id}`;
+                    const taskUrl = `${frontendUrl}/?taskId=${task._id}&tab=attachments`;
+
                     await Promise.all(
                         recipients.map((recipient) =>
                             sendEmail({
@@ -192,6 +197,8 @@ router.post(
                                     fileName: req.file.originalname,
                                     fileSize: formatFileSize(req.file.size),
                                     uploadedBy: uploaderName,
+                                    downloadUrl,
+                                    taskUrl,
                                 }),
                             }).catch((e) => console.error("Email send failed for attachment:", e.message))
                         )
@@ -293,6 +300,63 @@ router.get("/download/:attachmentId", jwtAuthMiddleware, async (req, res) => {
         res.status(500).json({
             message: error.message,
         });
+    }
+});
+
+// PUBLIC DIRECT FILE VIEW / DOWNLOAD (Jira-style email link - no Bearer token required)
+router.get(["/file/:attachmentId", "/public/:attachmentId"], async (req, res) => {
+    try {
+        const attachment = await Attachment.findById(req.params.attachmentId);
+
+        if (!attachment) {
+            return res.status(404).send(`
+                <html>
+                  <body style="font-family:sans-serif;text-align:center;padding:50px;">
+                    <h2>Attachment Not Found</h2>
+                    <p>The requested file could not be found or has been removed.</p>
+                    <a href="https://taskflow-eta-ten-87.vercel.app">Go to TaskFlow Workspace</a>
+                  </body>
+                </html>
+            `);
+        }
+
+        const filePath = path.join(uploadDir, attachment.filename);
+
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).send(`
+                <html>
+                  <body style="font-family:sans-serif;text-align:center;padding:50px;">
+                    <h2>File Not Found on Server</h2>
+                    <p>The file is no longer available on the server disk.</p>
+                    <a href="https://taskflow-eta-ten-87.vercel.app">Go to TaskFlow Workspace</a>
+                  </body>
+                </html>
+            `);
+        }
+
+        // Previewable MIME types for direct browser viewing (PDF, images, text)
+        const isInlinePreviewable = [
+            'application/pdf',
+            'image/png',
+            'image/jpeg',
+            'image/jpg',
+            'image/webp',
+            'image/gif',
+            'text/plain',
+            'application/json'
+        ].includes(attachment.mimeType);
+
+        const forceDownload = req.query.download === "true" || !isInlinePreviewable;
+
+        if (forceDownload) {
+            return res.download(filePath, attachment.originalName);
+        } else {
+            res.setHeader("Content-Type", attachment.mimeType || "application/octet-stream");
+            res.setHeader("Content-Disposition", `inline; filename="${encodeURIComponent(attachment.originalName)}"`);
+            return res.sendFile(filePath);
+        }
+    } catch (error) {
+        res.status(500).send("Error downloading file: " + error.message);
     }
 });
 

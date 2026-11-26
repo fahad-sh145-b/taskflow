@@ -165,6 +165,8 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
             }
 
             const assignedByName = populatedTask.createdBy?.name || "A team member";
+            const frontendUrl = process.env.FRONTEND_URL || "https://taskflow-eta-ten-87.vercel.app";
+            const taskUrl = `${frontendUrl}/?taskId=${populatedTask._id}`;
 
             for (const [email, info] of recipients.entries()) {
                 const subject = info.isAssignee
@@ -182,6 +184,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
                         priority: populatedTask.priority,
                         dueDate: populatedTask.dueDate ? new Date(populatedTask.dueDate).toLocaleDateString() : null,
                         assignedBy: assignedByName,
+                        taskUrl,
                     }),
                 });
             }
@@ -368,6 +371,9 @@ router.put("/:id", jwtAuthMiddleware, async (req, res) => {
                     subject = `[TaskFlow] New Task: "${updatedTask.title}" assigned to you`;
                 }
 
+                const frontendUrl = process.env.FRONTEND_URL || "https://taskflow-eta-ten-87.vercel.app";
+                const taskUrl = `${frontendUrl}/?taskId=${updatedTask._id}`;
+
                 await sendEmail({
                     to: recipientEmail,
                     subject,
@@ -381,6 +387,7 @@ router.put("/:id", jwtAuthMiddleware, async (req, res) => {
                         priority: updatedTask.priority,
                         dueDate: updatedTask.dueDate ? new Date(updatedTask.dueDate).toLocaleDateString() : null,
                         changes: changeList,
+                        taskUrl,
                     }),
                 });
                 console.log(`Update email sent successfully to: ${recipientEmail}`);

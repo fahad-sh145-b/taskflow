@@ -120,6 +120,9 @@ router.post('/:taskId', jwtAuthMiddleware, async (req, res) => {
                     _id: { $in: uniqueUsers },
                 }).select("name email");
 
+                const frontendUrl = process.env.FRONTEND_URL || "https://taskflow-eta-ten-87.vercel.app";
+                const taskUrl = `${frontendUrl}/?taskId=${task._id}&tab=comments`;
+
                 await Promise.all(
                     recipients.map((recipient) =>
                         sendEmail({
@@ -128,7 +131,9 @@ router.post('/:taskId', jwtAuthMiddleware, async (req, res) => {
                             html: commentNotificationTemplate({
                                 userName: recipient.name,
                                 taskTitle: task.title,
+                                commentAuthor: populatedComment.user?.name || "A team member",
                                 commentText: populatedComment.text,
+                                taskUrl,
                             }),
                         }).catch(e => console.error("Email send failed:", e.message))
                     )

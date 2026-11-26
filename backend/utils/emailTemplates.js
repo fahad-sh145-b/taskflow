@@ -19,6 +19,8 @@ const buildEmailWrapper = ({
   contentHtml = "",
   ctaText = "Open in TaskFlow →",
   ctaUrl = FRONTEND_URL,
+  secondaryCtaText = "",
+  secondaryCtaUrl = "",
 }) => {
   return `
 <!DOCTYPE html>
@@ -166,9 +168,16 @@ const buildEmailWrapper = ({
               <!-- CTA Button / Workspace Notice -->
               ${ctaUrl && !ctaUrl.includes("localhost") && !ctaUrl.includes("127.0.0.1") ? `
                 <div style="margin-top:26px;text-align:center;">
-                  <a href="${ctaUrl}" target="_blank" style="display:inline-block;background-color:${accentColor};color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;box-shadow:0 2px 6px rgba(79,70,229,0.25);">
+                  <a href="${ctaUrl}" target="_blank" style="display:inline-block;background-color:${accentColor};color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:13px 30px;border-radius:8px;box-shadow:0 3px 10px rgba(79,70,229,0.3);letter-spacing:0.2px;">
                     ${ctaText}
                   </a>
+                  ${secondaryCtaUrl ? `
+                    <div style="margin-top:14px;">
+                      <a href="${secondaryCtaUrl}" target="_blank" style="display:inline-block;color:#4f46e5;text-decoration:none;font-size:13px;font-weight:600;padding:7px 18px;border:1px solid #c7d2fe;background-color:#eef2ff;border-radius:6px;">
+                        ${secondaryCtaText || "View Task in TaskFlow →"}
+                      </a>
+                    </div>
+                  ` : ""}
                 </div>
               ` : `
                 <div class="action-notice" style="margin-top:22px;padding:14px 18px;background-color:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;text-align:center;line-height:1.65;">
@@ -212,6 +221,7 @@ const taskAssignedTemplate = ({
   priority = "medium",
   dueDate = null,
   assignedBy = "A team member",
+  taskUrl,
 }) => {
   const contentHtml = `
     <div class="inner-box" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin:16px 0;">
@@ -258,7 +268,7 @@ const taskAssignedTemplate = ({
     leadText: `<strong>${assignedBy}</strong> assigned a new task to you in <strong>TaskFlow</strong>.`,
     contentHtml,
     ctaText: "View & Start Task →",
-    ctaUrl: FRONTEND_URL,
+    ctaUrl: taskUrl || FRONTEND_URL,
   });
 };
 
@@ -271,6 +281,7 @@ const commentNotificationTemplate = ({
   projectName = "General",
   commentAuthor = "A team member",
   commentText,
+  taskUrl,
 }) => {
   const contentHtml = `
     <div class="inner-box" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin:16px 0;">
@@ -303,6 +314,7 @@ const commentNotificationTemplate = ({
     leadText: `<strong>${commentAuthor}</strong> added a comment to your task.`,
     contentHtml,
     ctaText: "Reply to Comment →",
+    ctaUrl: taskUrl || FRONTEND_URL,
   });
 };
 
@@ -314,6 +326,7 @@ const taskCompletedTemplate = ({
   taskTitle,
   projectName = "General",
   completedBy = "The assignee",
+  taskUrl,
 }) => {
   const contentHtml = `
     <div class="inner-box" style="background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:20px;margin:16px 0;text-align:center;">
@@ -342,6 +355,7 @@ const taskCompletedTemplate = ({
     leadText: "Great news! A task you are watching has been marked as <strong>Completed</strong>.",
     contentHtml,
     ctaText: "View Completed Task →",
+    ctaUrl: taskUrl || FRONTEND_URL,
   });
 };
 
@@ -358,6 +372,7 @@ const taskUpdatedTemplate = ({
   priority = "medium",
   dueDate = null,
   changes = [],
+  taskUrl,
 }) => {
   const statusStyles = {
     todo: { bg: "#eef2ff", text: "#4338ca", label: "To Do" },
@@ -421,6 +436,7 @@ const taskUpdatedTemplate = ({
     leadText: `<strong>${updatedBy}</strong> made changes to this task.`,
     contentHtml,
     ctaText: "Review Changes in TaskFlow →",
+    ctaUrl: taskUrl || FRONTEND_URL,
   });
 };
 
@@ -534,6 +550,8 @@ const attachmentUploadedTemplate = ({
   fileName,
   fileSize = "",
   uploadedBy = "A team member",
+  downloadUrl,
+  taskUrl,
 }) => {
   const contentHtml = `
     <div class="inner-box" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:10px;padding:18px 20px;margin:16px 0;">
@@ -557,7 +575,7 @@ const attachmentUploadedTemplate = ({
       </div>
 
       <p style="margin:12px 0 0 0;font-size:13px;color:#475569;line-height:1.6;">
-        💡 You can review or download this file directly from the Attachments tab inside TaskFlow.
+        💡 You can directly download the file below or view it inside your TaskFlow workspace.
       </p>
     </div>
   `;
@@ -572,6 +590,9 @@ const attachmentUploadedTemplate = ({
     leadText: `<strong>${uploadedBy}</strong> uploaded a new file to this task.`,
     contentHtml,
     ctaText: "View & Download File →",
+    ctaUrl: downloadUrl || FRONTEND_URL,
+    secondaryCtaText: "Open Task in TaskFlow →",
+    secondaryCtaUrl: taskUrl || FRONTEND_URL,
   });
 };
 
