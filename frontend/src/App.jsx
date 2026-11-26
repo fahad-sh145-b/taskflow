@@ -1082,7 +1082,7 @@ export default function App() {
                         <option value="unassigned">⚪ Unassigned</option>
                         {users.map(u => (
                             <option key={u._id} value={u._id}>
-                                👤 {u.name} ({u.email})
+                                👤 {u.name} {u.role === "admin" ? "• Admin" : ""}
                             </option>
                         ))}
                     </select>
