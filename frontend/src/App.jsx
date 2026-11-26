@@ -42,7 +42,8 @@ import {
     TrendingUp,
     PieChart,
     Activity,
-    Table
+    Table,
+    Menu
 } from "lucide-react";
 
 const api = axios.create({
@@ -86,6 +87,7 @@ export default function App() {
 
     const [mode, setMode] = useState("login");
     const [activeTab, setActiveTab] = useState("dashboard");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [auth, setAuth] = useState({
         name: "",
@@ -237,6 +239,38 @@ export default function App() {
             return () => clearTimeout(timer);
         }
     }, [message]);
+
+    // Close mobile drawer on Escape or resize to desktop
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape" && mobileMenuOpen) {
+                setMobileMenuOpen(false);
+            }
+        };
+        const handleResize = () => {
+            if (window.innerWidth > 768 && mobileMenuOpen) {
+                setMobileMenuOpen(false);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [mobileMenuOpen]);
+
+    // Prevent background scrolling on mobile when drawer is open
+    useEffect(() => {
+        if (mobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [mobileMenuOpen]);
 
     const handleAuth = async (e) => {
         e.preventDefault();
@@ -1214,22 +1248,77 @@ export default function App() {
     return (
         <div className="layout">
 
-            <aside className="sidebar">
-                <div className="sidebar-brand-wrapper">
-                    <div className="sidebar-brand-logo">
+            {/* Mobile Top Navigation Bar (Sticky at top, visible on <= 768px) */}
+            <div className="mobile-top-bar">
+                <div 
+                    className="mobile-brand" 
+                    onClick={() => { setActiveTab("dashboard"); setMobileMenuOpen(false); }}
+                >
+                    <div className="mobile-brand-logo">
                         <span className="brand-bolt">⚡</span>
                     </div>
-                    <div className="sidebar-brand-text">
-                        <span className="brand-name">TaskFlow</span>
-                        <span className="brand-plan">WORKSPACE</span>
+                    <span className="mobile-brand-title">TaskFlow</span>
+                </div>
+
+                <div className="mobile-top-actions">
+                    <span className="mobile-active-pill">
+                        {activeTab === "dashboard" && "Dashboard"}
+                        {activeTab === "projects" && "Projects"}
+                        {activeTab === "tasks" && "Tasks"}
+                        {activeTab === "kanban" && "Kanban"}
+                        {activeTab === "team" && "Team"}
+                    </span>
+                    <div 
+                        className={`mobile-user-avatar-pill ${user.role === "admin" ? "admin" : ""}`}
+                        title={`${user.name} (${user.email})`}
+                    >
+                        {(user.name ? user.name.substring(0, 2) : "U").toUpperCase()}
                     </div>
+                    <button 
+                        type="button"
+                        className="btn-mobile-menu"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Toggle navigation menu"
+                    >
+                        {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Drawer Backdrop */}
+            {mobileMenuOpen && (
+                <div 
+                    className="mobile-drawer-backdrop" 
+                    onClick={() => setMobileMenuOpen(false)} 
+                />
+            )}
+
+            <aside className={`sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
+                <div className="sidebar-brand-wrapper">
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div className="sidebar-brand-logo">
+                            <span className="brand-bolt">⚡</span>
+                        </div>
+                        <div className="sidebar-brand-text">
+                            <span className="brand-name">TaskFlow</span>
+                            <span className="brand-plan">WORKSPACE</span>
+                        </div>
+                    </div>
+                    <button 
+                        type="button" 
+                        className="btn-close-mobile-drawer" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        aria-label="Close navigation menu"
+                    >
+                        <X size={18} />
+                    </button>
                 </div>
 
                 <div className="sidebar-section-label">MAIN WORKSPACE</div>
 
                 <div 
                     className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`}
-                    onClick={() => setActiveTab("dashboard")}
+                    onClick={() => { setActiveTab("dashboard"); setMobileMenuOpen(false); }}
                 >
                     <LayoutDashboard size={17} /> 
                     <span>Dashboard</span>
@@ -1238,7 +1327,7 @@ export default function App() {
 
                 <div 
                     className={`nav-item ${activeTab === "projects" ? "active" : ""}`}
-                    onClick={() => setActiveTab("projects")}
+                    onClick={() => { setActiveTab("projects"); setMobileMenuOpen(false); }}
                 >
                     <FolderKanban size={17} /> 
                     <span>Projects</span>
@@ -1247,7 +1336,7 @@ export default function App() {
 
                 <div 
                     className={`nav-item ${activeTab === "tasks" ? "active" : ""}`}
-                    onClick={() => setActiveTab("tasks")}
+                    onClick={() => { setActiveTab("tasks"); setMobileMenuOpen(false); }}
                 >
                     <ListTodo size={17} /> 
                     <span>Tasks</span>
@@ -1256,7 +1345,7 @@ export default function App() {
 
                 <div 
                     className={`nav-item ${activeTab === "kanban" ? "active" : ""}`}
-                    onClick={() => setActiveTab("kanban")}
+                    onClick={() => { setActiveTab("kanban"); setMobileMenuOpen(false); }}
                 >
                     <Kanban size={17} /> 
                     <span>Kanban Board</span>
@@ -1266,7 +1355,7 @@ export default function App() {
 
                 <div 
                     className={`nav-item ${activeTab === "team" ? "active" : ""}`}
-                    onClick={() => setActiveTab("team")}
+                    onClick={() => { setActiveTab("team"); setMobileMenuOpen(false); }}
                 >
                     <Users size={17} /> 
                     <span>Team</span>
@@ -1290,7 +1379,7 @@ export default function App() {
                     </div>
                 </div>
 
-                <button className="btn-logout" onClick={logout}>
+                <button className="btn-logout" onClick={() => { setMobileMenuOpen(false); logout(); }}>
                     <LogOut size={16} /> Logout
                 </button>
             </aside>
@@ -2644,37 +2733,8 @@ export default function App() {
                                                             </div>
 
                                                             <div className="task-actions">
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn-details"
-                                                                    onClick={() => openTaskModal(task)}
-                                                                    title="View History, Comments & Files"
-                                                                >
-                                                                    <MessageSquare size={15} /> History & Comments
-                                                                </button>
-
-                                                                {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
-                                                                    <button
-                                                                        type="button"
-                                                                        className="btn-card-remind"
-                                                                        onClick={() => handleSendDueReminder(task._id)}
-                                                                        disabled={sendingReminderId === task._id}
-                                                                        title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
-                                                                    >
-                                                                        <BellRing size={14} /> {sendingReminderId === task._id ? "Sending..." : "Remind"}
-                                                                    </button>
-                                                                )}
-
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn-edit-task"
-                                                                    onClick={() => openEditTaskModal(task)}
-                                                                    title="Edit Task Details"
-                                                                >
-                                                                    <Pencil size={14} /> Edit
-                                                                </button>
-
                                                                 <select
+                                                                    className="task-status-select"
                                                                     value={task.status}
                                                                     onChange={e => updateTask(task._id, e.target.value)}
                                                                 >
@@ -2683,13 +2743,45 @@ export default function App() {
                                                                     <option value="completed">Completed</option>
                                                                 </select>
 
-                                                                <button
-                                                                    className="btn-delete"
-                                                                    onClick={() => deleteTask(task._id)}
-                                                                    title="Delete Task"
-                                                                >
-                                                                    <Trash2 size={16} />
-                                                                </button>
+                                                                <div className="task-actions-btn-group">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn-details"
+                                                                        onClick={() => openTaskModal(task)}
+                                                                        title="View History, Comments & Files"
+                                                                    >
+                                                                        <MessageSquare size={15} /> <span className="btn-action-text">History & Comments</span>
+                                                                    </button>
+
+                                                                    {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="btn-card-remind"
+                                                                            onClick={() => handleSendDueReminder(task._id)}
+                                                                            disabled={sendingReminderId === task._id}
+                                                                            title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
+                                                                        >
+                                                                            <BellRing size={14} /> <span className="btn-action-text">{sendingReminderId === task._id ? "Sending..." : "Remind"}</span>
+                                                                        </button>
+                                                                    )}
+
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn-edit-task"
+                                                                        onClick={() => openEditTaskModal(task)}
+                                                                        title="Edit Task Details"
+                                                                    >
+                                                                        <Pencil size={14} /> <span className="btn-action-text">Edit</span>
+                                                                    </button>
+
+                                                                    <button
+                                                                        className="btn-delete"
+                                                                        onClick={() => deleteTask(task._id)}
+                                                                        title="Delete Task"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     );
@@ -3213,37 +3305,8 @@ export default function App() {
                                                 </div>
 
                                             <div className="task-actions">
-                                                <button
-                                                    type="button"
-                                                    className="btn-details"
-                                                    onClick={() => openTaskModal(task)}
-                                                    title="View History, Comments & Files"
-                                                >
-                                                    <MessageSquare size={15} /> History & Comments
-                                                </button>
-
-                                                {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn-card-remind"
-                                                        onClick={() => handleSendDueReminder(task._id)}
-                                                        disabled={sendingReminderId === task._id}
-                                                        title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
-                                                    >
-                                                        <BellRing size={14} /> {sendingReminderId === task._id ? "Sending..." : "Remind"}
-                                                    </button>
-                                                )}
-
-                                                <button
-                                                    type="button"
-                                                    className="btn-edit-task"
-                                                    onClick={() => openEditTaskModal(task)}
-                                                    title="Edit Task Details"
-                                                >
-                                                    <Pencil size={14} /> Edit
-                                                </button>
-
                                                 <select
+                                                    className="task-status-select"
                                                     value={task.status}
                                                     onChange={e =>
                                                         updateTask(
@@ -3257,13 +3320,45 @@ export default function App() {
                                                     <option value="completed">Completed</option>
                                                 </select>
 
-                                                <button
-                                                    className="btn-delete"
-                                                    onClick={() => deleteTask(task._id)}
-                                                    title="Delete Task"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
+                                                <div className="task-actions-btn-group">
+                                                    <button
+                                                        type="button"
+                                                        className="btn-details"
+                                                        onClick={() => openTaskModal(task)}
+                                                        title="View History, Comments & Files"
+                                                    >
+                                                        <MessageSquare size={15} /> <span className="btn-action-text">History & Comments</span>
+                                                    </button>
+
+                                                    {task.status !== "completed" && task.assignedTo && !isTaskOverdue(task.dueDate, task.status) && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn-card-remind"
+                                                            onClick={() => handleSendDueReminder(task._id)}
+                                                            disabled={sendingReminderId === task._id}
+                                                            title={`Send due date reminder email to ${task.assignedTo?.name || 'assignee'}`}
+                                                        >
+                                                            <BellRing size={14} /> <span className="btn-action-text">{sendingReminderId === task._id ? "Sending..." : "Remind"}</span>
+                                                        </button>
+                                                    )}
+
+                                                    <button
+                                                        type="button"
+                                                        className="btn-edit-task"
+                                                        onClick={() => openEditTaskModal(task)}
+                                                        title="Edit Task Details"
+                                                    >
+                                                        <Pencil size={14} /> <span className="btn-action-text">Edit</span>
+                                                    </button>
+
+                                                    <button
+                                                        className="btn-delete"
+                                                        onClick={() => deleteTask(task._id)}
+                                                        title="Delete Task"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     );

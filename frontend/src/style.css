@@ -1384,6 +1384,29 @@ header {
     flex-shrink: 0;
 }
 
+.task-actions-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-action-text {
+    display: inline;
+}
+
+/* Mobile Navigation & Drawer Base Defaults (Desktop view hides these) */
+.mobile-top-bar {
+    display: none;
+}
+
+.mobile-drawer-backdrop {
+    display: none;
+}
+
+.btn-close-mobile-drawer {
+    display: none;
+}
+
 .btn-details {
     background: #f8fafc;
     color: #475569;
@@ -4996,24 +5019,191 @@ header {
     .layout {
         flex-direction: column !important;
         min-height: 100vh;
+        width: 100% !important;
     }
 
-    /* 2. Sleek Compact Mobile Sidebar */
-    .sidebar {
-        width: 100% !important;
-        padding: 14px 14px 10px 14px !important;
-        border-right: none !important;
+    /* 2. Mobile Top Navigation Bar */
+    .mobile-top-bar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 999 !important;
+        background: #0f172a !important;
+        color: #ffffff !important;
+        padding: 10px 14px !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .mobile-brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        user-select: none !important;
+    }
+
+    .mobile-brand-logo {
+        width: 32px !important;
+        height: 32px !important;
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 16px !important;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    .mobile-brand-title {
+        font-size: 17px !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.3px !important;
+        color: #ffffff !important;
+    }
+
+    .mobile-top-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+
+    .mobile-active-pill {
+        background: rgba(99, 102, 241, 0.18) !important;
+        color: #a5b4fc !important;
+        border: 1px solid rgba(165, 180, 252, 0.25) !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        padding: 4px 9px !important;
+        border-radius: 20px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .mobile-user-avatar-pill {
+        width: 30px !important;
+        height: 30px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .mobile-user-avatar-pill.admin {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        border-color: #fde68a !important;
+    }
+
+    .btn-mobile-menu {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 9px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        transition: background 0.2s ease !important;
+    }
+
+    .btn-mobile-menu:hover,
+    .btn-mobile-menu:active {
+        background: rgba(255, 255, 255, 0.18) !important;
+    }
+
+    /* 3. Mobile Drawer Backdrop */
+    .mobile-drawer-backdrop {
+        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 1000 !important;
+        animation: fadeInDrawer 0.2s ease-out !important;
+    }
+
+    @keyframes fadeInDrawer {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* 4. Transform Sidebar into Off-Canvas Slide Drawer */
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 290px !important;
+        max-width: 86vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 1001 !important;
+        background: #0f172a !important;
+        padding: 16px 14px !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-bottom: none !important;
+        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        transform: translateX(-105%) !important;
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0) !important;
     }
 
     .sidebar-brand-wrapper {
-        padding: 0 4px 10px 4px !important;
-        margin-bottom: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 0 12px 0 !important;
+        margin-bottom: 10px !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
 
+    .btn-close-mobile-drawer {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 32px !important;
+        height: 32px !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #94a3b8 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+    }
+
+    .btn-close-mobile-drawer:hover,
+    .btn-close-mobile-drawer:active {
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.16) !important;
+    }
+
     .sidebar-section-label {
-        display: none !important;
+        display: block !important;
+        font-size: 11px !important;
+        color: #64748b !important;
+        margin: 12px 0 6px 6px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
     }
 
     .nav-shortcut-key {
@@ -5021,16 +5211,22 @@ header {
     }
 
     .sidebar .nav-item {
-        padding: 8px 12px !important;
-        font-size: 13px !important;
-        margin-bottom: 4px !important;
-        border-radius: 8px !important;
+        padding: 11px 14px !important;
+        font-size: 13.5px !important;
+        margin-bottom: 6px !important;
+        border-radius: 10px !important;
+    }
+
+    .sidebar .nav-item:active {
+        transform: scale(0.98) !important;
     }
 
     .sidebar-user-card {
-        margin-top: 10px !important;
-        padding: 10px 12px !important;
+        margin-top: auto !important; /* Push user card to bottom of slide drawer */
+        padding: 12px 14px !important;
         background: rgba(255, 255, 255, 0.04) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 12px !important;
     }
 
     .sidebar-user-name {
@@ -5042,9 +5238,10 @@ header {
     }
 
     .sidebar .btn-logout {
-        margin-top: 8px !important;
-        padding: 8px 12px !important;
-        font-size: 12.5px !important;
+        margin-top: 10px !important;
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+        border-radius: 10px !important;
     }
 
     /* 3. Main Area Screen Utilization */
@@ -5212,26 +5409,49 @@ header {
 
     .task-actions {
         width: 100% !important;
-        flex-wrap: wrap !important;
+        display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 6px !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
         padding-top: 10px !important;
         border-top: 1px solid #f1f5f9 !important;
     }
 
-    .btn-details,
-    .btn-edit-task,
-    .btn-remind {
-        font-size: 11.5px !important;
-        padding: 6px 10px !important;
+    .task-status-select,
+    .status-select {
+        flex: 1 1 auto !important;
+        min-width: 105px !important;
+        max-width: 135px !important;
+        height: 36px !important;
+        padding: 6px 8px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
     }
 
-    .status-select {
-        font-size: 11.5px !important;
-        padding: 5px 8px !important;
-        max-width: 125px !important;
-        flex: 1 !important;
+    .task-actions-btn-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .btn-details,
+    .btn-card-remind,
+    .btn-edit-task,
+    .btn-delete {
+        min-height: 36px !important;
+        height: 36px !important;
+        padding: 0 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
+        gap: 5px !important;
+        font-size: 12px !important;
     }
 
     /* 9. Task Filter Controls & Chips */
@@ -5477,6 +5697,34 @@ header {
     .btn-quick-new-task,
     .btn-add-member {
         width: 100% !important;
+    }
+
+    /* Small Phone Task Actions Single-Row Fit */
+    .btn-action-text {
+        display: none !important;
+    }
+
+    .task-actions-btn-group {
+        gap: 5px !important;
+    }
+
+    .btn-details,
+    .btn-card-remind,
+    .btn-edit-task,
+    .btn-delete {
+        width: 36px !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        border-radius: 8px !important;
+    }
+
+    .task-status-select,
+    .status-select {
+        height: 36px !important;
+        font-size: 11.5px !important;
+        padding: 5px 6px !important;
+        max-width: 115px !important;
     }
 
     .auth-card {
