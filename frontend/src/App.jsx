@@ -3624,9 +3624,14 @@ export default function App() {
                         <div className="current-user-session-banner">
                             <div className="session-left">
                                 <span className="session-indicator">●</span>
-                                <span>
-                                    Currently viewing as: <strong>{user.name}</strong> (<code>{user.email}</code>)
-                                </span>
+                                <div className="session-user-info-col">
+                                    <div className="session-viewing-text">
+                                        Currently viewing as: <strong>{user.name}</strong>
+                                    </div>
+                                    <code className="session-email-badge" title={user.email}>
+                                        {user.email}
+                                    </code>
+                                </div>
                             </div>
                             <div className="session-roles">
                                 <span className="session-label">Your Account:</span>

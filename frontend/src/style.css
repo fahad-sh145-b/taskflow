@@ -43,6 +43,12 @@ textarea {
     font-size: 14px;
 }
 
+code {
+    font-family: var(--font-mono, monospace);
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
 button {
     cursor: pointer;
     border: none;
@@ -2364,7 +2370,7 @@ header {
     border: 1px solid #e2e8f0;
     border-left: 4px solid #4f46e5;
     padding: 14px 18px;
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2372,6 +2378,8 @@ header {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     flex-wrap: wrap;
     gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .session-left {
@@ -2380,6 +2388,35 @@ header {
     gap: 10px;
     font-size: 14px;
     color: #1e293b;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.session-user-info-col {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.session-viewing-text {
+    font-size: 13.5px;
+    color: #1e293b;
+    white-space: nowrap;
+}
+
+.session-email-badge {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: var(--font-mono, monospace);
+    word-break: break-all;
+    max-width: 100%;
+    display: inline-block;
 }
 
 .session-indicator {
@@ -5533,6 +5570,52 @@ header {
         white-space: nowrap !important;
         box-sizing: border-box !important;
         border-radius: 8px !important;
+    }
+
+    /* Team Directory Session Banner & Email Overflow Fix */
+    .current-user-session-banner {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        padding: 12px 14px !important;
+    }
+
+    .session-left {
+        width: 100% !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .session-indicator {
+        margin-top: 3px !important;
+    }
+
+    .session-user-info-col {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .session-viewing-text {
+        font-size: 13px !important;
+        white-space: normal !important;
+    }
+
+    .session-email-badge {
+        font-size: 11.5px !important;
+        word-break: break-all !important;
+        max-width: 100% !important;
+        line-height: 1.4 !important;
+        display: inline-block !important;
+    }
+
+    .session-roles {
+        width: 100% !important;
+        padding-top: 8px !important;
+        border-top: 1px dashed #f1f5f9 !important;
+        gap: 6px !important;
     }
 
     /* 10. Jira Pivot Matrix Table Responsiveness */
