@@ -5560,24 +5560,30 @@ header {
 
     .session-left {
         width: 100% !important;
-        align-items: flex-start !important;
-        gap: 8px !important;
-        word-break: break-word !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
     }
 
     .session-indicator {
-        margin-top: 3px !important;
+        flex-shrink: 0 !important;
+        margin-top: 0 !important;
     }
 
     .session-left span {
-        word-break: break-word !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
         min-width: 0 !important;
-        font-size: 13px !important;
-        line-height: 1.4 !important;
+        flex: 1 1 auto !important;
+        font-size: 12px !important;
+        line-height: 1.3 !important;
     }
 
     .session-left code {
-        word-break: break-all !important;
+        white-space: nowrap !important;
         background: transparent !important;
         padding: 0 !important;
         border: none !important;
@@ -5813,6 +5819,10 @@ header {
     .member-capacity-badge {
         padding: 2px 6px !important;
         font-size: 10px !important;
+    }
+
+    .session-left span {
+        font-size: 11.5px !important;
     }
 
     .auth-card {

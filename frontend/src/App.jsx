@@ -3618,7 +3618,7 @@ export default function App() {
                         <div className="current-user-session-banner">
                             <div className="session-left">
                                 <span className="session-indicator">●</span>
-                                <span>
+                                <span title={`Currently viewing as: ${user.name} (${user.email})`}>
                                     Currently viewing as: <strong>{user.name}</strong> (<code>{user.email}</code>)
                                 </span>
                             </div>
