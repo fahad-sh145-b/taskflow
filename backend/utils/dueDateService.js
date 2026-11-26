@@ -1,4 +1,5 @@
 const Task = require("../models/task");
+const User = require("../models/user");
 const Activity = require("../models/activity");
 const { sendEmail } = require("./emailService");
 const {
@@ -148,34 +149,59 @@ const sendManualTaskReminder = async (taskId, triggeredBy) => {
     const target = new Date(task.dueDate);
     target.setHours(0, 0, 0, 0);
     const diffMs = target.getTime() - today.getTime();
-    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+    diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
     if (diffDays < 0) {
       isOverdue = true;
       daysAgo = Math.abs(diffDays);
     }
   }
 
-  const sentRecipients = [];
-
   if (isOverdue) {
     throw new Error("Reminder emails are disabled for overdue tasks. Reminders are only sent for tasks on their due date.");
   }
 
-  // Due today or upcoming reminder: Send to Assignee
-  const html = taskDueTodayTemplate({
-    userName: task.assignedTo.name,
-    taskTitle: task.title,
-    projectName,
-    taskDescription: task.description,
-    dueDate: formattedDue,
-  });
+  // Determine recipients: Assignee AND Triggerer (so both receive the email in inbox)
+  const notificationUsers = [];
+  if (task.assignedTo?._id) notificationUsers.push(task.assignedTo._id.toString());
+  else if (task.assignedTo) notificationUsers.push(task.assignedTo.toString());
 
-  await sendEmail({
-    to: task.assignedTo.email,
-    subject: `[TaskFlow] Reminder: Task "${task.title}" (${task.dueDate ? `Due ${formattedDue}` : "Follow Up"})`,
-    html,
-  });
-  sentRecipients.push(task.assignedTo.email);
+  const triggererId = triggeredBy?._id || triggeredBy?.id;
+  if (triggererId) notificationUsers.push(triggererId.toString());
+
+  const uniqueUsers = [...new Set(notificationUsers)];
+  const recipients = await User.find({ _id: { $in: uniqueUsers } }).select("name email");
+
+  const frontendUrl = process.env.FRONTEND_URL || "https://taskflow-eta-ten-87.vercel.app";
+  const taskUrl = `${frontendUrl}/?taskId=${task._id}`;
+
+  const dueSubjectLabel = diffDays === 0
+    ? "Due Today"
+    : diffDays === 1
+    ? `Due Tomorrow, ${formattedDue}`
+    : `Due ${formattedDue}`;
+
+  const sentRecipients = [];
+
+  await Promise.all(
+    recipients.map(async (recipient) => {
+      const html = taskDueTodayTemplate({
+        userName: recipient.name,
+        taskTitle: task.title,
+        projectName,
+        taskDescription: task.description,
+        dueDate: formattedDue,
+        daysUntilDue: diffDays,
+        taskUrl,
+      });
+
+      await sendEmail({
+        to: recipient.email,
+        subject: `[TaskFlow] Reminder: Task "${task.title}" (${dueSubjectLabel})`,
+        html,
+      });
+      sentRecipients.push(recipient.email);
+    })
+  );
 
   task.lastDueReminderSentAt = new Date();
   await task.save();

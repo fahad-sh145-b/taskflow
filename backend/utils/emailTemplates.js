@@ -449,12 +449,31 @@ const taskDueTodayTemplate = ({
   projectName = "General",
   taskDescription = "",
   dueDate,
+  daysUntilDue = 0,
+  taskUrl,
 }) => {
+  let badgeLabel = `⏰ Due Today (${dueDate})`;
+  let headerTag = "DEADLINE TODAY";
+  let headline = `Due Today: ${taskTitle}`;
+  let leadText = "This is a friendly reminder that your assigned task reaches its deadline <strong>Today</strong>.";
+
+  if (daysUntilDue === 1) {
+    badgeLabel = `📅 Due Tomorrow (${dueDate})`;
+    headerTag = "DUE TOMORROW";
+    headline = `Due Tomorrow: ${taskTitle}`;
+    leadText = `This is a friendly reminder that your assigned task is due <strong>Tomorrow (${dueDate})</strong>.`;
+  } else if (daysUntilDue > 1) {
+    badgeLabel = `📅 Due in ${daysUntilDue} Days (${dueDate})`;
+    headerTag = "UPCOMING DEADLINE";
+    headline = `Upcoming Deadline: ${taskTitle}`;
+    leadText = `This is a friendly reminder that your assigned task is due on <strong>${dueDate}</strong> (in ${daysUntilDue} days).`;
+  }
+
   const contentHtml = `
     <div class="inner-box" style="background-color:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:18px 20px;margin:16px 0;">
       <div style="margin-bottom:12px;">
         <span class="meta-pill" style="background-color:#fef3c7;color:#b45309;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;text-transform:uppercase;display:inline-block;margin-bottom:8px;">
-          ⏰ Due Today (${dueDate})
+          ${badgeLabel}
         </span>
         <h3 style="margin:4px 0 6px 0;font-size:18px;font-weight:800;color:#92400e;line-height:1.35;">
           ${taskTitle}
@@ -470,21 +489,22 @@ const taskDueTodayTemplate = ({
       ` : ""}
 
       <p style="margin:14px 0 0 0;font-size:13px;color:#92400e;line-height:1.6;">
-        💡 Please make sure to submit or update your task status before the end of the day.
+        💡 Please make sure to submit or update your task status in TaskFlow.
       </p>
     </div>
   `;
 
   return buildEmailWrapper({
-    headerTag: "DEADLINE TODAY",
+    headerTag,
     tagBg: "#fef3c7",
     tagColor: "#b45309",
     accentColor: "#f59e0b",
     recipientName: userName || "Team Member",
-    headline: `Due Today: ${taskTitle}`,
-    leadText: "This is a friendly reminder that your assigned task reaches its deadline <strong>Today</strong>.",
+    headline,
+    leadText,
     contentHtml,
-    ctaText: "Complete Task in TaskFlow →",
+    ctaText: "Open Task in TaskFlow →",
+    ctaUrl: taskUrl || FRONTEND_URL,
   });
 };
 
