@@ -1863,7 +1863,7 @@ export default function App() {
                                                     <div className="member-info-col">
                                                         <div className="member-meta-row">
                                                             <span className="member-name-label" style={{ color: "#b45309" }}>Unassigned Tasks</span>
-                                                            <span className="member-active-count" style={{ color: "#b45309" }}>{unassignedActive} open</span>
+                                                            <span className="member-active-count" style={{ color: "#b45309", whiteSpace: "nowrap" }}>{unassignedActive} open</span>
                                                         </div>
                                                         <div className="workload-bar-track">
                                                             <div 
