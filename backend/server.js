@@ -82,8 +82,10 @@ app.get('/', (req, res) => {
 });
 
 // Health check endpoint for Render & UptimeRobot monitoring
-app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', uptime: process.uptime() }));
-app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', uptime: process.uptime() }));
+const BUILD_VERSION = "2.4.0-attachment-notifications";
+const BUILD_TIME = "2026-11-26T04:45:00Z";
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', version: BUILD_VERSION, buildTime: BUILD_TIME, uptime: process.uptime() }));
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', service: 'taskflow-backend', version: BUILD_VERSION, buildTime: BUILD_TIME, uptime: process.uptime() }));
 
 // Cloud email diagnostic test endpoint
 app.get('/api/test-email', async (req, res) => {

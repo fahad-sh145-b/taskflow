@@ -88,20 +88,45 @@ const sendEmail = async ({ to, subject, html, text }) => {
       };
     }
 
-    const smtpUser = (process.env.SMTP_USER || "").trim();
-    const smtpPass = (process.env.SMTP_PASS || "").replace(/\s+/g, "");
-
-    if (!smtpUser || !smtpPass) {
-      console.error("❌ [Email Error] SMTP_USER or SMTP_PASS is not set in environment variables!");
-      return {
-        success: false,
-        message: "SMTP_USER or SMTP_PASS is missing in environment variables on Render",
-      };
-    }
+    const smtpUser = (process.env.SMTP_USER || "shaikhbashiruddinmohdhajishaik@gmail.com").trim();
+    const smtpPass = (process.env.SMTP_PASS || "pxpoelgixszslnix").replace(/\s+/g, "");
 
     const plainText = text || htmlToPlainText(html) || subject;
+    const relayUrl = process.env.VERCEL_MAIL_RELAY_URL || "https://taskflow-eta-ten-87.vercel.app/api/send-email";
 
-    // 1. Attempt Direct Nodemailer SMTP (works on localhost, VPS, or unrestricted hosts)
+    // Fast-path for Render Cloud Containers:
+    // Render free-tier blocks outbound SMTP ports (465/587). Instead of hanging for 10s timeout,
+    // route directly through our secure Vercel HTTPS Serverless Relay (Port 443) for instant sub-second delivery!
+    if (process.env.RENDER === "true" || process.env.USE_EMAIL_RELAY === "true") {
+      try {
+        const relayRes = await fetch(relayUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to,
+            subject,
+            html,
+            text: plainText,
+          }),
+        });
+
+        const relayData = await relayRes.json().catch(() => ({}));
+
+        if (relayRes.ok && relayData?.success) {
+          console.log("✅ Email sent instantly via Vercel HTTPS Relay to:", to, "ID:", relayData.messageId);
+          return {
+            success: true,
+            messageId: relayData.messageId,
+            relay: true,
+          };
+        }
+        console.warn("⚠️ Vercel HTTPS Relay returned non-ok, falling back to direct SMTP:", relayData);
+      } catch (relayErr) {
+        console.warn("⚠️ Vercel HTTPS Relay error, trying direct SMTP fallback:", relayErr.message);
+      }
+    }
+
+    // Direct Nodemailer SMTP (works on localhost, VPS, or unrestricted hosts)
     try {
       const activeTransporter = createTransporter();
 
@@ -129,8 +154,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
       console.warn("⚠️ Direct SMTP failed (e.g. Render Free Tier port block):", smtpErr.message);
       console.log("🔄 Forwarding to Vercel HTTPS Serverless Relay (Port 443)...");
 
-      // 2. HTTPS Relay over Port 443 (Never blocked by cloud firewalls)
-      const relayUrl = process.env.VERCEL_MAIL_RELAY_URL || "https://taskflow-eta-ten-87.vercel.app/api/send-email";
+      // HTTPS Relay over Port 443 fallback
       const relayRes = await fetch(relayUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
